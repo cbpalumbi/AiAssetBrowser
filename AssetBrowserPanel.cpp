@@ -16,7 +16,7 @@ AssetBrowserPanel::AssetBrowserPanel(QWidget* parent)
     // Create and configure the model
     QFileSystemModel* model = new QFileSystemModel(this);
     model->setRootPath("C:/Users/Bella/Documents/AssetBrowserProjectAssets");
-    model->setNameFilters(QStringList() << "*.qml");
+    model->setNameFilters(QStringList() << "*.fbx" << "*.glb" << "*.obj");
     model->setNameFilterDisables(false);
 
     // Create and configure the tree view
@@ -38,8 +38,27 @@ AssetBrowserPanel::AssetBrowserPanel(QWidget* parent)
 
 void AssetBrowserPanel::handleFileSelected(const QModelIndex& index)
 {
-    QString filePath = static_cast<QFileSystemModel*>(fileTreeWidget->model())->filePath(index);
-    qDebug() << "Clicked:" << filePath;
-    previewWidget->loadModel(filePath);
+    auto* model = static_cast<QFileSystemModel*>(fileTreeWidget->model());
+    QString assetFilePath = model->filePath(index);
+
+    QFileInfo assetFileInfo(assetFilePath);
+    if (!assetFileInfo.exists()) {
+        qWarning() << "Selected asset file does not exist:" << assetFilePath;
+        return;
+    }
+
+    // Construct .qml preview path by replacing extension
+    QString qmlPreviewPath = assetFileInfo.path() + "/" + assetFileInfo.completeBaseName() + ".qml";
+    QFileInfo qmlFileInfo(qmlPreviewPath);
+
+    if (!qmlFileInfo.exists()) {
+        qWarning() << "QML preview file not found for asset:" << assetFilePath
+                   << "\nExpected at:" << qmlPreviewPath;
+        return;
+    }
+
+    qDebug() << "Loading QML preview:" << qmlPreviewPath;
+    previewWidget->loadModel(qmlPreviewPath);
 }
+
 
