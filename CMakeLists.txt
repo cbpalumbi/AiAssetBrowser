@@ -44,6 +44,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         ModelPreviewWidget.cpp
+        AssetBrowserPanel.cpp
+        AssetBrowserPanel.h
     )
 
     # ✅ Link the QML resources to the executable

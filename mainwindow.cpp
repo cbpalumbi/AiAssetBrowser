@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "ModelPreviewWidget.h"
+#include "AssetBrowserPanel.h".h"
 #include<QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -7,25 +7,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
 
-    // Create and configure the model
-    model = new QFileSystemModel(this);
-    model->setRootPath("C:/Users/Bella/Documents/AssetBrowserProjectAssets");
-    model->setNameFilters(QStringList() << "*.fbx" << "*.glb" << "*.obj");
-    model->setNameFilterDisables(false);
+    // ModelPreviewWidget* modelPreview = new ModelPreviewWidget(this);
+    // modelPreview->loadModel("C:/Users/Bella/Documents/AssetBrowser/Duck.qml");
 
-    // Create and configure the tree view
-    treeView = new QTreeView(this);
-    treeView->setModel(model);
-    treeView->setRootIndex(model->index(model->rootPath()));
-    treeView->setHeaderHidden(false);
-    treeView->setAnimated(true);
-    treeView->setSortingEnabled(true);
-    treeView->setColumnWidth(0, 250);
 
-    ModelPreviewWidget* modelPreview = new ModelPreviewWidget(this);
-    modelPreview->loadModel("C:/Users/Bella/Documents/AssetBrowser/Duck.qml");
+    //setCentralWidget(modelPreview);
 
-    setCentralWidget(modelPreview);
+    AssetBrowserPanel* assetBrowserPanel = new AssetBrowserPanel(this);
+    setCentralWidget(assetBrowserPanel);
     setWindowTitle("AI Asset Browser - Home");
     resize(800, 600);
 

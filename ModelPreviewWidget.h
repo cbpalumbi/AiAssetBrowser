@@ -1,3 +1,6 @@
+#ifndef MODEL_PREVIEW_WIDGET_H
+#define MODEL_PREVIEW_WIDGET_H
+
 // ModelPreviewWidget.h
 #include <QQuickWidget>
 #include <QWidget>
@@ -11,3 +14,5 @@ public:
 private:
     QQuickWidget *quickWidget;
 };
+
+#endif // MODEL_PREVIEW_WIDGET_H
