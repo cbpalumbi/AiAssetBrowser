@@ -28,15 +28,6 @@ Item {
             rotation: Qt.vector3d(-45, 0, 0)
         }
 
-        Model {
-            position: Qt.vector3d(-100, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "#Cube"
-            materials: PrincipledMaterial {
-                baseColor: "red"
-            }
-        }
-
         Node {
             id: modelContainer
         }

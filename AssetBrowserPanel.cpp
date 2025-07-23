@@ -15,8 +15,8 @@ AssetBrowserPanel::AssetBrowserPanel(QWidget* parent)
 
     // Create and configure the model
     QFileSystemModel* model = new QFileSystemModel(this);
-    model->setRootPath("C:/Users/Bella/Documents/AssetBrowser");
-    model->setNameFilters(QStringList() << "*.fbx" << "*.glb" << "*.obj" << "*.qml");
+    model->setRootPath("C:/Users/Bella/Documents/AssetBrowserProjectAssets");
+    model->setNameFilters(QStringList() << "*.qml");
     model->setNameFilterDisables(false);
 
     // Create and configure the tree view
