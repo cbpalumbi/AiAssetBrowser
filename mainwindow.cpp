@@ -1,9 +1,12 @@
 #include "mainwindow.h"
+#include "ModelPreviewWidget.h"
 #include<QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+
+
     // Create and configure the model
     model = new QFileSystemModel(this);
     model->setRootPath("C:/Users/Bella/Documents/AssetBrowserProjectAssets");
@@ -19,9 +22,14 @@ MainWindow::MainWindow(QWidget *parent)
     treeView->setSortingEnabled(true);
     treeView->setColumnWidth(0, 250);
 
-    setCentralWidget(treeView);
+    ModelPreviewWidget* modelPreview = new ModelPreviewWidget(this);
+    modelPreview->loadModel("C:/Users/Bella/Documents/AssetBrowserProjectAssets/Duck.glb");
+    //setCentralWidget(treeView);
+    setCentralWidget(modelPreview);
     setWindowTitle("AI Asset Browser - Home");
     resize(800, 600);
+
+
 }
 
 MainWindow::~MainWindow() {}

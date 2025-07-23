@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ModelViewer.qml</file>
+        <file>TestModelViewer.qml</file>
+    </qresource>
+</RCC>

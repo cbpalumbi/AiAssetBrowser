@@ -1,0 +1,37 @@
+// ModelPreviewWidget.cpp
+#include "ModelPreviewWidget.h"
+
+#include <QQuickItem>
+#include <QUrl>
+#include <QObject>
+#include <QQmlContext>
+#include <QVBoxLayout>
+
+ModelPreviewWidget::ModelPreviewWidget(QWidget *parent) : QWidget(parent) {
+    quickWidget = new QQuickWidget(this);
+    quickWidget->setSource(QUrl(QStringLiteral("qrc:/ModelViewer.qml")));
+    quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    //setCentralWidget(quickWidget);
+
+
+    auto *layout = new QVBoxLayout(this);
+    layout->addWidget(quickWidget);
+    layout->setContentsMargins(0, 0, 0, 0);
+}
+
+void ModelPreviewWidget::loadModel(const QString &filePath) {
+    QQuickItem* rootItem = quickWidget->rootObject();
+    if (!rootItem) {
+        qWarning() << "Root QML object is null";
+        return;
+    }
+    qDebug() << filePath;
+    // Set the QML property "modelSource" to the file URL
+    bool success = rootItem->setProperty("modelSource", QUrl::fromLocalFile(filePath));
+    qDebug() << rootItem->property("modelSource");
+    if (!success) {
+        qWarning() << "Failed to set modelSource property";
+    }
+}
+
+
