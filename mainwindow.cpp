@@ -23,8 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
     treeView->setColumnWidth(0, 250);
 
     ModelPreviewWidget* modelPreview = new ModelPreviewWidget(this);
-    modelPreview->loadModel("C:/Users/Bella/Documents/AssetBrowserProjectAssets/Duck.glb");
-    //setCentralWidget(treeView);
+    modelPreview->loadModel("C:/Users/Bella/Documents/AssetBrowser/Duck.qml");
+
     setCentralWidget(modelPreview);
     setWindowTitle("AI Asset Browser - Home");
     resize(800, 600);

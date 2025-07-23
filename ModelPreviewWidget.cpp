@@ -25,12 +25,14 @@ void ModelPreviewWidget::loadModel(const QString &filePath) {
         qWarning() << "Root QML object is null";
         return;
     }
-    qDebug() << filePath;
-    // Set the QML property "modelSource" to the file URL
-    bool success = rootItem->setProperty("modelSource", QUrl::fromLocalFile(filePath));
-    qDebug() << rootItem->property("modelSource");
+    QVariant urlString = QVariant(QUrl::fromLocalFile(filePath).toString());
+    bool success = rootItem->setProperty("modelComponentSource", urlString);
+
     if (!success) {
-        qWarning() << "Failed to set modelSource property";
+        qWarning() << "Failed to set modelComponentSource property";
+    } else {
+        QVariant val = rootItem->property("modelComponentSource");
+        qDebug() << "modelComponentSource is now set to:" << val.toString();
     }
 }
 
