@@ -36,13 +36,20 @@ TagEditorPanel::TagEditorPanel(QWidget* parent)
     connect(saveButton, &QPushButton::clicked, this, &TagEditorPanel::onSaveButtonClicked);
 }
 
+void TagEditorPanel::setMetadata(const QVariantMap& metadata) {
+    currentMetadata = metadata;
+
+    // Populate UI with current tags
+    if (currentMetadata.contains("tags")) {
+        loadTags(currentMetadata["tags"].toStringList());
+    }
+}
+
+
 void TagEditorPanel::onSaveButtonClicked()
 {
-    QVariantMap updatedMetadata;
-
-    updatedMetadata["tags"] = getTags();
-
-    emit saveRequested(updatedMetadata);
+    currentMetadata["tags"] = getTags();
+    emit saveRequested(currentMetadata);
 }
 
 void TagEditorPanel::loadTags(const QStringList& tags)

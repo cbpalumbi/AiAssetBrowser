@@ -25,6 +25,8 @@ signals:
     // Emitted when user clicks Save
     void saveRequested(const QVariantMap& updatedMetadata);
 
+public slots:
+    void setMetadata(const QVariantMap& metadata);
 private slots:
     void addTag();
     void removeSelectedTag();
@@ -35,6 +37,7 @@ private:
     QPushButton* addTagButton;
     QPushButton* removeTagButton;
     QPushButton* saveButton;
+    QVariantMap currentMetadata;
 };
 
 #endif // TAGEDITORPANEL_H

@@ -1,6 +1,7 @@
 #include "AssetBrowserPanel.h"
 #include "TagEditorPanel.h"
 #include "MetadataUtils.h"
+#include "HistoryUtils.h"
 
 #include <QHBoxLayout>
 #include <QFileSystemModel>
@@ -90,10 +91,7 @@ void AssetBrowserPanel::handleFileSelected(const QModelIndex& index)
         return;
     }
 
-    // For now, load tags if present; else empty list
-    QStringList tags = currentMetadata.value("tags").toStringList();
-    tagEditorPanel->loadTags(tags);
-
+    tagEditorPanel->setMetadata(currentMetadata);
 }
 
 void AssetBrowserPanel::handleMetadataSave(const QVariantMap& updatedMetadata)
@@ -113,6 +111,11 @@ void AssetBrowserPanel::handleMetadataSave(const QVariantMap& updatedMetadata)
         qDebug() << "Metadata saved to" << metadataPath;
         currentMetadata = updatedMetadata;
     }
+
+    QString historyPath = basePath + ".history.json";
+
+    HistoryUtils::appendEntry(historyPath, "cb", "metadata_update", updatedMetadata, "Updated tags");
+
 }
 
 

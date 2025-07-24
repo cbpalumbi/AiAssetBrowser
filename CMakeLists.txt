@@ -50,6 +50,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         TagEditorPanel.h
         MetadataUtils.h
         MetadataUtils.cpp
+        HistoryUtils.h HistoryUtils.cpp
     )
 
     # ✅ Link the QML resources to the executable
