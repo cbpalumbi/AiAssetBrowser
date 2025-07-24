@@ -46,6 +46,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ModelPreviewWidget.cpp
         AssetBrowserPanel.cpp
         AssetBrowserPanel.h
+        TagEditorPanel.cpp
+        TagEditorPanel.h
+        MetadataUtils.h
+        MetadataUtils.cpp
     )
 
     # ✅ Link the QML resources to the executable

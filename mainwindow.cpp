@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "AssetBrowserPanel.h".h"
+#include "AssetBrowserPanel.h"
 #include<QDebug>
 
 MainWindow::MainWindow(QWidget *parent)

@@ -1,4 +1,6 @@
 #include "AssetBrowserPanel.h"
+#include "TagEditorPanel.h"
+#include "MetadataUtils.h"
 
 #include <QHBoxLayout>
 #include <QFileSystemModel>
@@ -28,11 +30,17 @@ AssetBrowserPanel::AssetBrowserPanel(QWidget* parent)
     fileTreeWidget->setSortingEnabled(true);
     fileTreeWidget->setColumnWidth(0, 250);
 
+    tagEditorPanel = new TagEditorPanel(this);
+
     layout->addWidget(previewWidget, /*stretch=*/3);
     layout->addWidget(fileTreeWidget, /*stretch=*/1);
+    layout->addWidget(tagEditorPanel, 1);
 
     connect(fileTreeWidget, &QTreeView::clicked,
             this, &AssetBrowserPanel::handleFileSelected);
+
+    connect(tagEditorPanel, &TagEditorPanel::saveRequested,
+            this, &AssetBrowserPanel::handleMetadataSave);
 
 }
 
@@ -47,6 +55,8 @@ void AssetBrowserPanel::handleFileSelected(const QModelIndex& index)
         return;
     }
 
+    currentAssetFilePath = assetFileInfo.absoluteFilePath();
+
     // Construct .qml preview path by replacing extension
     QString qmlPreviewPath = assetFileInfo.path() + "/" + assetFileInfo.completeBaseName() + ".qml";
     QFileInfo qmlFileInfo(qmlPreviewPath);
@@ -59,6 +69,52 @@ void AssetBrowserPanel::handleFileSelected(const QModelIndex& index)
 
     qDebug() << "Loading QML preview:" << qmlPreviewPath;
     previewWidget->loadModel(qmlPreviewPath);
+
+
+    // Load metadata JSON
+    QString metadataFilePath = assetFileInfo.path() + "/" + assetFileInfo.completeBaseName() + ".metadata.json";
+    QFileInfo metadataFileInfo(metadataFilePath);
+
+    if (!metadataFileInfo.exists()) {
+        qWarning() << "Metadata JSON file not found for asset:" << assetFilePath
+                   << "\nExpected at:" << metadataFilePath;
+        currentMetadata.clear();
+        tagEditorPanel->loadTags(QStringList{});
+        return;
+    }
+
+    currentMetadata = MetadataUtils::loadMetadata(metadataFilePath);
+    if (currentMetadata.isEmpty()) {
+        qWarning() << "Loaded metadata is empty or invalid for asset:" << assetFilePath;
+        tagEditorPanel->loadTags(QStringList{});
+        return;
+    }
+
+    // For now, load tags if present; else empty list
+    QStringList tags = currentMetadata.value("tags").toStringList();
+    tagEditorPanel->loadTags(tags);
+
 }
+
+void AssetBrowserPanel::handleMetadataSave(const QVariantMap& updatedMetadata)
+{
+    if (currentAssetFilePath.isEmpty()) {
+        qWarning() << "No asset selected to save metadata for.";
+        return;
+    }
+
+    QFileInfo assetInfo(currentAssetFilePath);
+    QString basePath = assetInfo.path() + "/" + assetInfo.completeBaseName();  // No extension
+    QString metadataPath = basePath + ".metadata.json";
+
+    if (!MetadataUtils::saveMetadata(metadataPath, updatedMetadata)) {
+        qWarning() << "Failed to save metadata for" << metadataPath;
+    } else {
+        qDebug() << "Metadata saved to" << metadataPath;
+        currentMetadata = updatedMetadata;
+    }
+}
+
+
 
 
