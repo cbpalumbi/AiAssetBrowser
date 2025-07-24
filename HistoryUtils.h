@@ -14,11 +14,14 @@ public:
         QVariantMap metadata;
     };
 
-    static bool appendEntry(const QString& historyFilePath,
-                            const QString& user,
-                            const QString& action,
-                            const QVariantMap& metadata,
-                            const QString& message = "");
+    static bool appendEntry(
+                const QString& historyFilePath,
+                const QString& user,
+                const QString& action,
+                const QVariantMap& data,
+                const QString& comment,
+                const QStringList& changedKeys);
+
 
     static QVariantList readHistory(const QString& historyFilePath);
 };

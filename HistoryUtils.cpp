@@ -10,8 +10,9 @@
 bool HistoryUtils::appendEntry(const QString& historyFilePath,
                                const QString& user,
                                const QString& action,
-                               const QVariantMap& metadata,
-                               const QString& message)
+                               const QVariantMap& data,
+                               const QString& comment,
+                               const QStringList& changedKeys)
 {
     QFile file(historyFilePath);
     QJsonArray historyArray;
@@ -22,12 +23,22 @@ bool HistoryUtils::appendEntry(const QString& historyFilePath,
             return false;
         }
 
-        QByteArray data = file.readAll();
+        QByteArray rawData = file.readAll();
         file.close();
 
-        QJsonDocument doc = QJsonDocument::fromJson(data);
-        if (doc.isArray()) {
-            historyArray = doc.array();
+        if (!rawData.trimmed().isEmpty()) {
+            QJsonParseError parseError;
+            QJsonDocument doc = QJsonDocument::fromJson(rawData, &parseError);
+            if (parseError.error != QJsonParseError::NoError) {
+                qWarning() << "Failed to parse existing history JSON:" << parseError.errorString();
+                return false;
+            }
+            if (doc.isArray()) {
+                historyArray = doc.array();
+            } else {
+                qWarning() << "History file does not contain a JSON array:" << historyFilePath;
+                return false;
+            }
         }
     }
 
@@ -35,12 +46,13 @@ bool HistoryUtils::appendEntry(const QString& historyFilePath,
     entry["timestamp"] = QDateTime::currentDateTimeUtc().toString(Qt::ISODate);
     entry["user"] = user;
     entry["action"] = action;
-    entry["message"] = message;
-    entry["metadata"] = QJsonObject::fromVariantMap(metadata);
+    entry["changed_keys"] = QJsonArray::fromStringList(changedKeys);
+    entry["data"] = QJsonObject::fromVariantMap(data);
+    entry["comment"] = comment;
 
     historyArray.append(entry);
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
         qWarning() << "Failed to open history file for writing:" << historyFilePath;
         return false;
     }
@@ -51,6 +63,7 @@ bool HistoryUtils::appendEntry(const QString& historyFilePath,
 
     return true;
 }
+
 
 QVariantList HistoryUtils::readHistory(const QString& historyFilePath)
 {
@@ -69,13 +82,30 @@ QVariantList HistoryUtils::readHistory(const QString& historyFilePath)
     QByteArray data = file.readAll();
     file.close();
 
-    QJsonDocument doc = QJsonDocument::fromJson(data);
-    if (doc.isArray()) {
-        QJsonArray array = doc.array();
-        for (const QJsonValue& val : array) {
+    if (data.trimmed().isEmpty()) {
+        qWarning() << "History file is empty:" << historyFilePath;
+        return historyList;
+    }
+
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+    if (parseError.error != QJsonParseError::NoError) {
+        qWarning() << "Failed to parse history JSON:" << parseError.errorString();
+        return historyList;
+    }
+
+    if (!doc.isArray()) {
+        qWarning() << "History file does not contain a JSON array:" << historyFilePath;
+        return historyList;
+    }
+
+    QJsonArray array = doc.array();
+    for (const QJsonValue& val : array) {
+        if (val.isObject()) {
             historyList.append(val.toObject().toVariantMap());
         }
     }
 
     return historyList;
 }
+

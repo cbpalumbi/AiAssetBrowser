@@ -3,6 +3,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDebug>
+#include <QSet>
+#include <QList>
+#include <QString>
 
 QVariantMap MetadataUtils::loadMetadata(const QString& metadataFilePath)
 {
@@ -50,3 +53,33 @@ bool MetadataUtils::saveMetadata(const QString& metadataFilePath, const QVariant
 
     return bytesWritten == data.size();
 }
+
+QStringList MetadataUtils::computeChangedKeys(const QVariantMap& oldMetadata, const QVariantMap& newMetadata)
+{
+    QStringList oldKeys = oldMetadata.keys();  // keep a named variable to extend lifetime. segfault otherwise if you try to construct a set from qvariantmap.keys directly
+    QStringList newKeys = newMetadata.keys();
+
+    QSet<QString> oldKeysSet(oldKeys.begin(), oldKeys.end());
+    QSet<QString> newKeysSet(newKeys.begin(), newKeys.end());
+
+    QSet<QString> allKeys;
+    allKeys.unite(oldKeysSet);
+    allKeys.unite(newKeysSet);
+
+
+    QStringList changedKeys;
+
+    for (const QString& key : allKeys) {
+        const QVariant& oldValue = oldMetadata.value(key);
+        const QVariant& newValue = newMetadata.value(key);
+
+        if (!oldMetadata.contains(key) || !newMetadata.contains(key)) {
+            changedKeys.append(key);
+        } else if (oldValue != newValue) {
+            changedKeys.append(key);
+        }
+    }
+
+    return changedKeys;
+}
+

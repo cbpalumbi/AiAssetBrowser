@@ -105,6 +105,8 @@ void AssetBrowserPanel::handleMetadataSave(const QVariantMap& updatedMetadata)
     QString basePath = assetInfo.path() + "/" + assetInfo.completeBaseName();  // No extension
     QString metadataPath = basePath + ".metadata.json";
 
+    QStringList changedKeys = MetadataUtils::computeChangedKeys(currentMetadata, updatedMetadata);
+
     if (!MetadataUtils::saveMetadata(metadataPath, updatedMetadata)) {
         qWarning() << "Failed to save metadata for" << metadataPath;
     } else {
@@ -114,7 +116,8 @@ void AssetBrowserPanel::handleMetadataSave(const QVariantMap& updatedMetadata)
 
     QString historyPath = basePath + ".history.json";
 
-    HistoryUtils::appendEntry(historyPath, "cb", "metadata_update", updatedMetadata, "Updated tags");
+
+    HistoryUtils::appendEntry(historyPath, "cb", "metadata_update", updatedMetadata, "Changed metadata", changedKeys);
 
 }
 
