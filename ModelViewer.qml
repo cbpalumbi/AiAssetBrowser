@@ -86,7 +86,6 @@ Item {
                if (item && item instanceof Node) {
                    item.parent = modelContainer
                    item.position = Qt.vector3d(0, 0, 0)
-                   item.scale = Qt.vector3d(1, 1, 1)
                    console.log("Duck parented into scene")
                } else {
                    console.warn("Loaded item is not a Node")
