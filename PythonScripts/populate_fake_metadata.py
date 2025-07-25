@@ -17,17 +17,47 @@ def save_json(path, data):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
 
+import random
+from datetime import datetime
+
 def generate_fake_metadata(base_metadata, creator, last_edited_by):
+    adjectives = ["ancient", "worn", "ornate", "mystic", "cracked", "heavy", "lightweight", "legendary", "bloodstained"]
+    materials = ["iron", "leather", "bone", "steel", "obsidian", "silver", "gold", "wooden", "cloth"]
+    types = ["helmet", "sword", "shield", "gauntlet", "duck statue", "armor piece", "amulet", "crossbow", "cloak"]
+    purposes = [
+        "used in arena duels",
+        "worn by royal guards",
+        "for ceremonial purposes",
+        "enchanted by forest druids",
+        "forged by mountain clans",
+        "retrieved from ancient ruins",
+        "found in a cursed tomb",
+        "infused with dark magic",
+    ]
+
     metadata = base_metadata.copy()
-    metadata["creator"] = creator  # creator stays the same
-    metadata["last_edited_by"] = last_edited_by  # updated every edit
+    metadata["creator"] = creator
+    metadata["last_edited_by"] = last_edited_by
     metadata["category"] = random.choice(["Character", "Environment", "Prop", "Effect"])
-    metadata["description"] = faker.sentence(nb_words=12)
-    metadata["tags"] = random.sample(
-        ["lowpoly", "animated", "VR", "scifi", "fantasy", "weapon", "urban", "rigged"],
-        k=random.randint(2, 4)
+
+    # Generate game-themed templated description
+    metadata["description"] = (
+        f"A {random.choice(adjectives)} {random.choice(materials)} {random.choice(types)} "
+        f"{random.choice(purposes)}."
     )
+
+    metadata["tags"] = random.sample(
+        ["lowpoly", "animated", "VR", "scifi", "fantasy", "weapon", "urban", "rigged", "medieval", "magical", "armor"],
+        k=random.randint(3, 5)
+    )
+
+    # Optional: set timestamps to now
+    now = datetime.utcnow().isoformat() + "Z"
+    metadata["created"] = now
+    metadata["updated"] = now
+
     return metadata
+
 
 def generate_fake_history_entries(existing_metadata, num_entries=10, base_created=None):
     entries = []

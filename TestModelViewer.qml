@@ -23,7 +23,7 @@ Window {
 
         Model {
             x: -100
-            source: "#Cube"
+            source: "file:///C:/Users/Bella/Documents/AssetBrowserProjectAssets/beetle_car/beetle_car.qml"
             materials: PrincipledMaterial {
                 baseColor: "red"
             }
@@ -38,8 +38,5 @@ Window {
         //         }
         //     ]
         // }
-        Duck {
-            scale: Qt.vector3d(1, 1, 1)
-        }
     }
 }

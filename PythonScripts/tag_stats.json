@@ -1,0 +1,24 @@
+{
+    "existing_tags": {
+        "bird": 2,
+        "test2": 2,
+        "hii": 2,
+        "computer": 1,
+        "static": 1,
+        "person": 1,
+        "robot": 1
+    },
+    "tags_by_category": {
+        "Uncategorized": {
+            "bird": 2,
+            "test2": 2,
+            "hii": 2
+        },
+        "Character": {
+            "computer": 1,
+            "static": 1,
+            "person": 1,
+            "robot": 1
+        }
+    }
+}

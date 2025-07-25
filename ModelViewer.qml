@@ -82,13 +82,11 @@ Item {
            source: modelComponentSource
            asynchronous: false
            onLoaded: {
-               console.log("Duck loaded:", modelComponentSource)
                if (item && item instanceof Node) {
                    item.parent = modelContainer
                    item.position = Qt.vector3d(0, 0, 0)
-                   console.log("Duck parented into scene")
                } else {
-                   console.warn("Loaded item is not a Node")
+                   console.warn("ModelViewer.qml: Loaded item is not a Node")
                }
            }
        }
